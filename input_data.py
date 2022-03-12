@@ -2,9 +2,8 @@ from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram import types,Dispatcher
 from aiogram.dispatcher.filters import Text
-from create_bot import dp,db
 
-
+from create_bot import db,bot,avalible_boxes
 
 
 
@@ -22,7 +21,12 @@ class FSMAdmin(StatesGroup):
 async def enter_date(message: types.Message):
     if db.subscriber_exists(message.from_user.id):
         await FSMAdmin.product_id.set()
-        await message.reply("Choose box")
+        await bot.send_message(message.chat.id, "Choose box:")
+
+        for i in range(len(avalible_boxes)):
+            await bot.send_message(message.chat.id, "1." + ' ' + avalible_boxes[f'{i + 1}']['name'])
+
+
 
 
 async def load_product(message: types.Message, state: FSMContext):

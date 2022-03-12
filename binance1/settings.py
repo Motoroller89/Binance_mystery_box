@@ -1,3 +1,5 @@
+from database import PostgreSql
+
 CSRFTOKEN = ''
 COOKIE = ''
 
