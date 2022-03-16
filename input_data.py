@@ -18,11 +18,9 @@ class FSMAdmin(StatesGroup):
     device_info = State()
     bnc_uuid = State()
 
-id = 0
+
 
 async def enter_date(message: types.Message):
-    global id
-    id = message.from_user.id
     if db.subscriber_exists(message.from_user.id):
         await FSMAdmin.product_id.set()
         await bot.send_message(message.chat.id, "Choose box:")

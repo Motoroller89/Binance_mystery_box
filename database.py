@@ -21,7 +21,7 @@ class PostgreSql:
     def add_subscriber(self, user_id, status = True):
         """ Append new user"""
         with self.connection:
-            return self.cursor.execute(f"INSERT INTO subscription(user_id, status) values({user_id},{status})")
+            return self.cursor.execute("INSERT INTO subscription(user_id, status) values({},{})".format(user_id,status))
 
     def subscriber_exists(self, user_id):
         """ Проверяем есть ли в базе"""

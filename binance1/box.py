@@ -8,14 +8,13 @@ import requests
 
 from binance1.handlers import event_is_not_over
 from binance1.schemas import Body, Headers
-
 from binance1.settings import headers
 
 class BaseBox:
 
     def __init__(self):
         self._box_list = 'https://www.binance.com/bapi/nft/v1/public/nft/mystery-box/list?page=1&size=15'
-    
+
     def get_list_boxes(self) -> dict:
         return requests.get(self._box_list).json()['data']
 
@@ -35,9 +34,9 @@ class BaseBox:
                     'name': name,
                     'product_id': product_id
                 }
-        
+
         return avalible_boxes
-    
+
     @staticmethod
     def log_info_boxes(avalible_boxes: dict) -> None:
         for box_num, value in avalible_boxes.items():
