@@ -3,7 +3,8 @@ from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram import types,Dispatcher
 from aiogram.dispatcher.filters import Text
 
-from create_bot import db,bot,avalible_boxes
+from create_bot import db,bot
+from box_date import avalible_boxes
 
 
 
@@ -17,14 +18,17 @@ class FSMAdmin(StatesGroup):
     device_info = State()
     bnc_uuid = State()
 
+id = 0
 
 async def enter_date(message: types.Message):
+    global id
+    id = message.from_user.id
     if db.subscriber_exists(message.from_user.id):
         await FSMAdmin.product_id.set()
         await bot.send_message(message.chat.id, "Choose box:")
 
         for i in range(len(avalible_boxes)):
-            await bot.send_message(message.chat.id, "1." + ' ' + avalible_boxes[f'{i + 1}']['name'])
+            await bot.send_message(message.chat.id, f"{i+1}." + ' ' + avalible_boxes[f'{i + 1}']['name'])
 
 
 
@@ -40,7 +44,7 @@ async def load_product(message: types.Message, state: FSMContext):
 async def load_number(message: types.Message, state: FSMContext):
     if db.subscriber_exists(message.from_user.id):
         async with state.proxy() as data:
-            data['number'] = message.text
+            data['number'] = int(message.text)
         await FSMAdmin.next()
         await message.reply('Enter csrftoken')
 

@@ -8,10 +8,17 @@ import requests
 from binance1.settings import headers
 
 
+
+
 def event_is_not_over(status: int) -> bool:
     return status == 0
 
 def headers_is_right() -> bool:
+    from input_data import id
+    from create_bot import db
+
+    db.post_date_in_setting(id)
+
     user_info = 'https://www.binance.com/bapi/accounts/v1/private/account/user/base-detail'
     response = requests.post(user_info, headers=headers)
 

@@ -35,7 +35,7 @@ class PostgreSql:
 
     def add_date(self,product_id,number,csrftoken,cookie,device_info,bnc_uuid,user_id):
         with self.connection:
-            return self.cursor.execute(f"update subscription set product_id ={product_id}, number = {number}, csrftoken = {csrftoken}, cookie = {cookie}, device_info = {device_info}, bnc_uuid = {bnc_uuid} where user_id = {user_id}")
+            return self.cursor.execute(f"update subscription set product_id ={product_id}, number = {number}, csrftoken = '{csrftoken}', cookie = '{cookie}', device_info = '{device_info}', bnc_uuid = '{bnc_uuid}' where user_id = {user_id}")
 
     def post_product_id(self,user_id):
         with self.connection:

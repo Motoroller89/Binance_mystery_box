@@ -8,8 +8,8 @@ import requests
 
 from binance1.handlers import event_is_not_over
 from binance1.schemas import Body, Headers
-from binance1.settings import headers
 
+from binance1.settings import headers
 
 class BaseBox:
 
@@ -42,6 +42,7 @@ class BaseBox:
     def log_info_boxes(avalible_boxes: dict) -> None:
         for box_num, value in avalible_boxes.items():
             print(f'{box_num}. {value["name"]}')
+
 
 
 class Box(BaseBox):
@@ -85,3 +86,7 @@ class Box(BaseBox):
         )
         print(response.json())
         return response
+
+
+box_info = BaseBox()
+avalible_boxes = box_info.get_avalible_boxes()
