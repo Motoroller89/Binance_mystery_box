@@ -7,13 +7,22 @@ import logging
 
 import input_data
 
+import os
+
 from create_bot import dp, bot, db
 from binance1.handlers import headers_is_right, send_requests_to_buy
 from box_date import avalible_boxes
 from binance1.box import Box
+from config import URL_APP
 
 logging.basicConfig(level=logging.INFO)
 
+
+async def on_statrap(dp):
+    await bot.set_webhook(URL_APP)
+
+async def on_shourdown(dp):
+    await bot.delete_webhook()
 
 @dp.message_handler(commands="start")
 async def cmd_start(message: types.Message):
@@ -80,4 +89,12 @@ async def main(message: types.Message):
 
 
 if __name__ == '__main__':
-    executor.start_polling(dp, skip_updates=False)
+    executor.start_webhook(
+        dispatcher=dp,
+        webhook_path= '',
+        on_startup= on_statrap(dp),
+        on_shutdown= on_shourdown(dp),
+        skip_updates= True,
+        host = '0.0.0.0',
+        port = int(os.environ.get("PORT",5000)),
+        )
