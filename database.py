@@ -1,18 +1,16 @@
 import psycopg2
 import psycopg2.extras
+import os
 
-from config import host, user, password, db_name
 
 
 # Избавиться от sql иньекицй
 class PostgreSql:
 
-    def __init__(self, database_file):
+    def __init__(self):
         self.connection = psycopg2.connect(
-            dbname=db_name,
-            user=user,
-            host=host,
-            password=password
+            os.environ.get('DATABASE_URL'),
+            sslmode = 'require'
         )
 
         self.cursor = self.connection.cursor()

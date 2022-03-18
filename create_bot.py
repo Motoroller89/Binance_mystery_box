@@ -9,4 +9,4 @@ storage = MemoryStorage()
 
 bot = Bot(token=TOKEN)
 dp = Dispatcher(bot, storage=storage)
-db = PostgreSql('Binance_bot.db')
+db = PostgreSql()
