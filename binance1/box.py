@@ -8,7 +8,8 @@ import requests
 
 from binance1.handlers import event_is_not_over
 from binance1.schemas import Body, Headers
-from binance1.settings import headers
+#from binance1.settings import headers
+from create_bot import db
 
 class BaseBox:
 
@@ -50,6 +51,8 @@ class Box(BaseBox):
         self,
         amount: int=0,
         product_id: Optional[Union[str, int]]='',
+        id: int=0,
+
     ):
         super().__init__()
         self._box_info: str = 'https://www.binance.com/bapi/nft/v1/friendly/nft/mystery-box/detail?productId='
@@ -58,11 +61,24 @@ class Box(BaseBox):
         self._product_id = product_id
         self._amount = amount
 
+        date = db.post_date_in_setting(id)
+        headers = {
+            'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36',
+            'clienttype': 'web',
+            'cookie': date[1].encode('UTF-8'),
+            'csrftoken': date[0],
+            'content-type': 'application/json',
+            'bnc-uuid': date[3],
+            'device-info': date[2],
+
+        }
         self._headers: Headers = headers
+
         self._body: Body = {
             'productId': product_id,
             'number': amount
         }
+
 
     @property
     @abstractmethod

@@ -5,7 +5,9 @@ from datetime import datetime, timedelta
 
 import requests
 
-from binance1.settings import headers
+#from binance1.settings import headers
+
+from create_bot import db
 
 
 
@@ -13,8 +15,18 @@ from binance1.settings import headers
 def event_is_not_over(status: int) -> bool:
     return status == 0
 
-def headers_is_right() -> bool:
+def headers_is_right(id) -> bool:
+    date =db.post_date_in_setting(id)
+    headers = {
+        'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36',
+        'clienttype': 'web',
+        'cookie': date[1].encode('UTF-8'),
+        'csrftoken': date[0],
+        'content-type': 'application/json',
+        'bnc-uuid': date[3],
+        'device-info': date[2],
 
+    }
     user_info = 'https://www.binance.com/bapi/accounts/v1/private/account/user/base-detail'
     response = requests.post(user_info, headers=headers)
 
