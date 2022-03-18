@@ -35,7 +35,7 @@ async def cansel_handler(message: types.Message, state: FSMContext):
     if current_state is None:
         return
     await state.finish()
-    await message.reply('OK')
+    await bot.send_message(message.chat.id,'Input canceled')
 
 
 async def load_product(message: types.Message, state: FSMContext):
@@ -97,7 +97,7 @@ async def load_bnc_uuid(message: types.Message, state: FSMContext):
 def register_handlers_data(dp: Dispatcher):
     dp.register_message_handler(enter_date, Text(equals="Config"), state=None)
     dp.register_message_handler(cansel_handler, state="*", commands='отмена')
-    dp.register_message_handler(cansel_handler, Text(equals='отмена', ignore_case=True), state="*")
+    dp.register_message_handler(cansel_handler, Text(equals='stop', ignore_case=True), state="*")
     dp.register_message_handler(load_product, state=FSMAdmin.product_id)
     dp.register_message_handler(load_number, state=FSMAdmin.number)
     dp.register_message_handler(load_csrftoken, state=FSMAdmin.csrftoken)
