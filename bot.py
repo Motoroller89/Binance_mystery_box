@@ -92,8 +92,8 @@ if __name__ == '__main__':
     executor.start_webhook(
         dispatcher=dp,
         webhook_path= '',
-        on_startup= on_statrap(dp),
-        on_shutdown= on_shourdown(dp),
+        on_startup= on_statrap,
+        on_shutdown= on_shourdown,
         skip_updates= True,
         host = '0.0.0.0',
         port = int(os.environ.get("PORT",5000)),
