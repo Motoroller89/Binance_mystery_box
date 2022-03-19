@@ -42,7 +42,7 @@ async def contact_admin(message: types.Message):
     markup = types.InlineKeyboardMarkup()
     button1 = types.InlineKeyboardButton("Contact Admin", url='https://t.me/diachylum')
     markup.add(button1)
-    await bot.send_message(message.chat.id, reply_markup=markup)
+    await bot.send_message(message.chat.id,'For all questions', reply_markup=markup)
 
 
 @dp.message_handler(Text(equals="Subscribe"))
