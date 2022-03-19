@@ -23,7 +23,7 @@ async def enter_date(message: types.Message):
         await bot.send_message(message.chat.id, "Active boxes :")
         for i in range(len(avalible_boxes)):
             await bot.send_message(message.chat.id, f"{i + 1}." + ' ' + avalible_boxes[f'{i + 1}']['name'])
-        bot.send_message(message.chat.id, 'select the number of the desired box')
+        await bot.send_message(message.chat.id, 'select the number of the desired box')
 
     else:
         await bot.send_message(message.chat.id, 'Subscription has expired. You can renew by writing to the admin',
