@@ -23,7 +23,7 @@ async def enter_date(message: types.Message):
         await bot.send_message(message.chat.id, "Active boxes :")
         for i in range(len(avalible_boxes)):
             await bot.send_message(message.chat.id, f"{i + 1}." + ' ' + avalible_boxes[f'{i + 1}']['name'])
-        await bot.send_message(message.chat.id, 'select the number of the desired box')
+        await bot.send_message(message.chat.id, 'Select the number of the desired box')
 
     else:
         await bot.send_message(message.chat.id, 'Subscription has expired. You can renew by writing to the admin',
@@ -95,7 +95,7 @@ async def load_bnc_uuid(message: types.Message, state: FSMContext):
             except:
                 await bot.send_message(message.chat.id, 'Data entered incorrectly, please try again')
 
-            await bot.send_message(message.from_user.id,'the data entered is correct')
+            await bot.send_message(message.from_user.id,'Data entry is complete.')
         await state.finish()
 
 
