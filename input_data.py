@@ -20,9 +20,10 @@ class FSMAdmin(StatesGroup):
 async def enter_date(message: types.Message):
     if db.subscriber_exists(message.from_user.id):
         await FSMAdmin.product_id.set()
-        await bot.send_message(message.chat.id, "Choose box:")
+        await bot.send_message(message.chat.id, "Active boxes :")
         for i in range(len(avalible_boxes)):
             await bot.send_message(message.chat.id, f"{i + 1}." + ' ' + avalible_boxes[f'{i + 1}']['name'])
+        bot.send_message(message.chat.id, 'select the number of the desired box')
 
     else:
         await bot.send_message(message.chat.id, 'Subscription has expired. You can renew by writing to the admin',
@@ -35,15 +36,16 @@ async def cansel_handler(message: types.Message, state: FSMContext):
     if current_state is None:
         return
     await state.finish()
-    await bot.send_message(message.chat.id,'Input canceled')
+    await bot.send_message(message.chat.id, 'Input canceled')
 
 
 async def load_product(message: types.Message, state: FSMContext):
     if db.subscriber_exists(message.from_user.id):
         async with state.proxy() as data:
-            data['product_id'] = message.text
+                data['product_id'] = message.text
+
         await FSMAdmin.next()
-        await message.reply('Enter the number of boxes')
+        await bot.send_message(message.chat.id, 'Enter the number of boxes')
 
 
 async def load_number(message: types.Message, state: FSMContext):
@@ -51,7 +53,7 @@ async def load_number(message: types.Message, state: FSMContext):
         async with state.proxy() as data:
             data['number'] = int(message.text)
         await FSMAdmin.next()
-        await message.reply('Enter csrftoken')
+        await bot.send_message(message.chat.id, 'Enter csrftoken')
 
 
 async def load_csrftoken(message: types.Message, state: FSMContext):
@@ -59,7 +61,7 @@ async def load_csrftoken(message: types.Message, state: FSMContext):
         async with state.proxy() as data:
             data['csrftoken'] = message.text
         await FSMAdmin.next()
-        await message.reply('Enter cookie')
+        await bot.send_message(message.chat.id, 'Enter cookie')
 
 
 async def load_cookie(message: types.Message, state: FSMContext):
@@ -67,7 +69,7 @@ async def load_cookie(message: types.Message, state: FSMContext):
         async with state.proxy() as data:
             data['cookie'] = message.text
         await FSMAdmin.next()
-        await message.reply('Enter device_info')
+        await bot.send_message(message.chat.id, 'Enter device_info')
 
 
 async def load_device_info(message: types.Message, state: FSMContext):
@@ -75,7 +77,7 @@ async def load_device_info(message: types.Message, state: FSMContext):
         async with state.proxy() as data:
             data['device_info'] = message.text
         await FSMAdmin.next()
-        await message.reply('Enter bnc_uuid')
+        await bot.send_message(message.chat.id, 'Enter bnc_uuid')
 
 
 async def load_bnc_uuid(message: types.Message, state: FSMContext):
@@ -85,12 +87,15 @@ async def load_bnc_uuid(message: types.Message, state: FSMContext):
 
         async with state.proxy() as data:
             dictionary = data.as_dict()
-            db.add_date(product_id=dictionary['product_id'], number=dictionary['number'],
+            try:
+                db.add_date(product_id=dictionary['product_id'], number=dictionary['number'],
                         csrftoken=dictionary['csrftoken'], cookie=dictionary['cookie'],
                         device_info=dictionary['device_info'], bnc_uuid=dictionary['bnc_uuid'],
                         user_id=message.from_user.id)
-            await message.reply(str(data))
+            except:
+                await bot.send_message(message.chat.id, 'Data entered incorrectly, please try again')
 
+            await bot.send_message(message.from_user.id,'the data entered is correct')
         await state.finish()
 
 

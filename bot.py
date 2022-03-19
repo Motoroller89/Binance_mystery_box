@@ -31,9 +31,10 @@ async def cmd_start(message: types.Message):
     except:
         pass
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    buttons = ["Check subscription", "Contact Admin"]
+    buttons = ["Subscribe", "Contact Admin"]
     keyboard.add(*buttons)
-    await message.answer("Hi", reply_markup=keyboard)
+    await bot.send_message(message.chat.id,"Okay , let's start ", reply_markup=keyboard)
+    await bot.send_message(message.chat.id, 'Click the «subscribe» button to subscribe to telegram bot ')
 
 
 @dp.message_handler(Text(equals="Contact Admin"))
@@ -41,13 +42,16 @@ async def contact_admin(message: types.Message):
     markup = types.InlineKeyboardMarkup()
     button1 = types.InlineKeyboardButton("Contact Admin", url='https://t.me/diachylum')
     markup.add(button1)
-    await bot.send_message(message.chat.id, "For all questions, please contact us 👇", reply_markup=markup)
+    await bot.send_message(message.chat.id, reply_markup=markup)
 
 
-@dp.message_handler(Text(equals="Check subscription"))
+@dp.message_handler(Text(equals="Subscribe"))
 async def check_subscription(message: types.Message):
     if not (db.subscriber_exists(message.from_user.id)):
-        await bot.send_message(message.chat.id, "You don't have a subscription. Contact Admin")
+        markup = types.InlineKeyboardMarkup()
+        button1 = types.InlineKeyboardButton("Admin", url='https://t.me/diachylum')
+        markup.add(button1)
+        await bot.send_message(message.chat.id, "To subscribe , write to the admin in a private message",reply_markup=markup)
     else:
         keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
         buttons = ["Config", 'Start bot']
@@ -66,21 +70,24 @@ async def main(message: types.Message):
             selected_box = db.post_product_id(message.chat.id)
 
             if headers_is_right(id=message.chat.id):
+
                 await bot.send_message(message.chat.id, 'Successfully connected')
+
+                product_id = avalible_boxes[selected_box[0]]['product_id']
+                box = Box(product_id=product_id, amount=selected_box[1], id=message.chat.id)
+                start_sale_time = box._get_start_sale_time
+                await bot.send_message(message.chat.id, 'Waiting for start')
+                await send_requests_to_buy(box, start_sale_time)
+
             else:
                 await bot.send_message(message.chat.id, 'Something wrong...')
                 await bot.send_message(message.chat.id, 'Check please: COOKIE, CSRFTOKEN')
 
-            product_id = avalible_boxes[selected_box[0]]['product_id']
-            box = Box(product_id=product_id, amount=selected_box[1], id=message.chat.id)
-            start_sale_time = box._get_start_sale_time
-            await bot.send_message(message.chat.id, 'Waiting for start')
-            await send_requests_to_buy(box, start_sale_time)
+
 
         except AttributeError:
             await bot.send_message(message.chat.id, 'First, fill in the data by clicking on the button Config')
-        except:
-            await bot.send_message(message.chat.id, 'Something wrong')
+
 
     else:
         await bot.send_message(message.chat.id, 'Subscription has expired. You can renew by writing to the admin',
