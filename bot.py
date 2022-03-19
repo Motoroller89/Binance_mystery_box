@@ -33,8 +33,8 @@ async def cmd_start(message: types.Message):
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
     buttons = ["Subscribe", "Contact Admin"]
     keyboard.add(*buttons)
-    await bot.send_message(message.chat.id,"Okay , let's start ", reply_markup=keyboard)
-    await bot.send_message(message.chat.id, 'Click the «subscribe» button to subscribe to telegram bot ')
+    await bot.send_message(message.chat.id,"Okay , let's start ")
+    await bot.send_message(message.chat.id, 'Click the «subscribe» button to subscribe to telegram bot ',reply_markup=keyboard)
 
 
 @dp.message_handler(Text(equals="Contact Admin"))
