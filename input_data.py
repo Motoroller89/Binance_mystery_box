@@ -92,10 +92,11 @@ async def load_bnc_uuid(message: types.Message, state: FSMContext):
                         csrftoken=dictionary['csrftoken'], cookie=dictionary['cookie'],
                         device_info=dictionary['device_info'], bnc_uuid=dictionary['bnc_uuid'],
                         user_id=message.from_user.id)
+                await bot.send_message(message.from_user.id, 'Data entry is complete.')
             except:
                 await bot.send_message(message.chat.id, 'Data entered incorrectly, please try again')
 
-            await bot.send_message(message.from_user.id,'Data entry is complete.')
+
         await state.finish()
 
 
