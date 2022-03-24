@@ -44,7 +44,7 @@ def get_random_proxy():
 
     return random.choice(proxies)
 
-async def send_requests_to_buy(box, start_sale_time: datetime):
+def send_requests_to_buy(box, start_sale_time: datetime):
     threads = list()
     while True:
         current_time = datetime.today()
@@ -54,9 +54,9 @@ async def send_requests_to_buy(box, start_sale_time: datetime):
                     target=box._buy_box,
                     args=(get_random_proxy(),)
                 )
-                await request.start()
-                await threads.append(request)
-                await time.sleep(0.07)
+                request.start()
+                threads.append(request)
+                time.sleep(0.07)
 
             for thread in threads:
-                await thread.join()
+                thread.join()

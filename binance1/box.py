@@ -93,8 +93,8 @@ class Box(BaseBox):
         return start_sale_time
 
     @abstractmethod
-    async def _buy_box(self, proxy) -> json:
-        response = await requests.post(
+    def _buy_box(self, proxy) -> json:
+        response = requests.post(
             self._box_buy, headers=self._headers,
             data=json.dumps(self._body),
             proxies={'http': f'http://{proxy}/'}
