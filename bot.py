@@ -85,11 +85,11 @@ async def main(message: types.Message):
 
                 await bot.send_message(message.chat.id, 'Successfully connected')
 
-                product_id = await avalible_boxes[selected_box[0]]['product_id']
-                box = await Box(product_id=product_id, amount=selected_box[1], id=message.chat.id)
-                start_sale_time = await box._get_start_sale_time
+                product_id = avalible_boxes[selected_box[0]]['product_id']
+                box = Box(product_id=product_id, amount=selected_box[1], id=message.chat.id)
+                start_sale_time = box._get_start_sale_time
                 await bot.send_message(message.chat.id, 'Waiting for start')
-                await send_requests_to_buy(box, start_sale_time)
+                send_requests_to_buy(box, start_sale_time)
 
 
             else:
@@ -109,12 +109,4 @@ async def main(message: types.Message):
 
 
 if __name__ == '__main__':
-    executor.start_webhook(
-        dispatcher=dp,
-        webhook_path= '',
-        on_startup= on_statrap,
-        on_shutdown= on_shourdown,
-        skip_updates= True,
-        host = '0.0.0.0',
-        port = int(os.environ.get("PORT",5000)),
-        )
+    executor.start_polling(dp, skip_updates=False)

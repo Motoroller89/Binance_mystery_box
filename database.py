@@ -9,8 +9,12 @@ class PostgreSql:
 
     def __init__(self):
         self.connection = psycopg2.connect(
-            os.environ.get('DATABASE_URL'),
-            sslmode = 'require'
+            host = 'ec2-52-208-185-143.eu-west-1.compute.amazonaws.com',
+            database  = 'd5b9a4s137v9j0',
+            user = 'cnhwbwwxgxegnn',
+            port= '5432',
+            password = '79cf742acc0d215e07466c4871726d193914c4037eb5208c665e3d30db9d8b87',
+
         )
 
         self.cursor = self.connection.cursor()
