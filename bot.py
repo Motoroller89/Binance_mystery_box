@@ -8,6 +8,7 @@ import logging
 import input_data
 
 import os
+import threading
 
 from create_bot import dp, bot, db
 from binance1.handlers import headers_is_right, send_requests_to_buy
@@ -88,8 +89,13 @@ async def main(message: types.Message):
                 product_id = avalible_boxes[selected_box[0]]['product_id']
                 box = Box(product_id=product_id, amount=selected_box[1], id=message.chat.id)
                 start_sale_time = box._get_start_sale_time
+                send = threading.Thread(target=send_requests_to_buy,
+                                        args=(box,start_sale_time,))
+
                 await bot.send_message(message.chat.id, 'Waiting for start')
-                send_requests_to_buy(box, start_sale_time)
+                send.start()
+
+                #await send_requests_to_buy(box, start_sale_time)
 
 
             else:

@@ -46,17 +46,20 @@ def get_random_proxy():
 
 def send_requests_to_buy(box, start_sale_time: datetime):
     threads = list()
-    while True:
+    d = True
+    while  d:
         current_time = datetime.today()
-        if start_sale_time <= (current_time - timedelta(seconds=0.1)):
-            for _ in range(1, 1000):
-                request = threading.Thread(
-                    target=box._buy_box,
-                    args=(get_random_proxy(),)
-                )
-                request.start()
-                threads.append(request)
-                time.sleep(0.07)
+        #if start_sale_time <= (current_time - timedelta(seconds=0.1)):
+        for _ in range(1, 100):
+            request = threading.Thread(
+                target=box._buy_box,
+                args=(get_random_proxy(),)
+            )
+            request.start()
+            threads.append(request)
+            time.sleep(0.07)
 
-            for thread in threads:
-                thread.join()
+        for thread in threads:
+            thread.join()
+
+        d = False
