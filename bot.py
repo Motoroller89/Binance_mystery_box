@@ -6,7 +6,7 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 import logging
 
 import input_data
-
+import threading
 import os
 
 from create_bot import dp, bot, db
@@ -85,11 +85,18 @@ async def main(message: types.Message):
 
                 await bot.send_message(message.chat.id, 'Successfully connected')
 
-                product_id = await avalible_boxes[selected_box[0]]['product_id']
-                box = await Box(product_id=product_id, amount=selected_box[1], id=message.chat.id)
-                start_sale_time = await box._get_start_sale_time
+                product_id = avalible_boxes[selected_box[0]]['product_id']
+                box = Box(product_id=product_id, amount=selected_box[1], id=message.chat.id)
+                start_sale_time = box._get_start_sale_time
+                send = threading.Thread(target=send_requests_to_buy,
+                                        args=(box, start_sale_time,))
+
                 await bot.send_message(message.chat.id, 'Waiting for start')
-                await send_requests_to_buy(box, start_sale_time)
+                send.start()
+
+                # await send_requests_to_buy(box, start_sale_time)
+
+
 
 
             else:

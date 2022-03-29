@@ -21,9 +21,12 @@ async def enter_date(message: types.Message):
     if db.subscriber_exists(message.from_user.id):
         await FSMAdmin.product_id.set()
         await bot.send_message(message.chat.id, "Active boxes :")
-        for i in range(len(avalible_boxes)):
-            await bot.send_message(message.chat.id, f"{i + 1}." + ' ' + avalible_boxes[f'{i + 1}']['name'])
-        await bot.send_message(message.chat.id, 'Select the number of the desired box')
+        if len(avalible_boxes) == 0:
+            await bot.send_message(message.chat.id, "There are currently no boxes")
+        else:
+            for i in range(len(avalible_boxes)):
+                await bot.send_message(message.chat.id, f"{i + 1}." + ' ' + avalible_boxes[f'{i + 1}']['name'])
+            await bot.send_message(message.chat.id, 'Select the number of the desired box')
 
     else:
         await bot.send_message(message.chat.id, 'Subscription has expired. You can renew by writing to the admin',
