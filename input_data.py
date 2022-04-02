@@ -48,13 +48,17 @@ async def load_product(message: types.Message, state: FSMContext):
                 data['product_id'] = message.text
 
         await FSMAdmin.next()
-        await bot.send_message(message.chat.id, 'Enter the number of boxes')
+        await bot.send_message(message.chat.id, f'Enter the number of boxes(max - {avalible_boxes[data["product_id"]]["limitPerTime"]})')
 
 
 async def load_number(message: types.Message, state: FSMContext):
     if db.subscriber_exists(message.from_user.id):
         async with state.proxy() as data:
-            data['number'] = int(message.text)
+            try:
+                data['number'] = int(message.text)
+            except:
+                await bot.send_message(message.chat.id,'Something wrong')
+
         await FSMAdmin.next()
         await bot.send_message(message.chat.id, 'Enter csrftoken')
 
@@ -62,7 +66,11 @@ async def load_number(message: types.Message, state: FSMContext):
 async def load_csrftoken(message: types.Message, state: FSMContext):
     if db.subscriber_exists(message.from_user.id):
         async with state.proxy() as data:
-            data['csrftoken'] = message.text
+            try:
+                data['csrftoken'] = message.text
+            except:
+                await bot.send_message(message.chat.id, 'Something wrong')
+
         await FSMAdmin.next()
         await bot.send_message(message.chat.id, 'Enter cookie')
 
@@ -70,7 +78,11 @@ async def load_csrftoken(message: types.Message, state: FSMContext):
 async def load_cookie(message: types.Message, state: FSMContext):
     if db.subscriber_exists(message.from_user.id):
         async with state.proxy() as data:
-            data['cookie'] = message.text
+            try:
+                data['cookie'] = message.text
+            except:
+                await bot.send_message(message.chat.id,'Something wrong')
+
         await FSMAdmin.next()
         await bot.send_message(message.chat.id, 'Enter device_info')
 
@@ -78,7 +90,10 @@ async def load_cookie(message: types.Message, state: FSMContext):
 async def load_device_info(message: types.Message, state: FSMContext):
     if db.subscriber_exists(message.from_user.id):
         async with state.proxy() as data:
-            data['device_info'] = message.text
+            try:
+                data['device_info'] = message.text
+            except:
+                await bot.send_message(message.chat.id,'Something wrong')
         await FSMAdmin.next()
         await bot.send_message(message.chat.id, 'Enter bnc_uuid')
 
@@ -86,7 +101,10 @@ async def load_device_info(message: types.Message, state: FSMContext):
 async def load_bnc_uuid(message: types.Message, state: FSMContext):
     if db.subscriber_exists(message.from_user.id):
         async with state.proxy() as data:
-            data['bnc_uuid'] = message.text
+            try:
+                data['bnc_uuid'] = message.text
+            except:
+                await bot.send_message(message.chat.id,'Something wrong')
 
         async with state.proxy() as data:
             dictionary = data.as_dict()
