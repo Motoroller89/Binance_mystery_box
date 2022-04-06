@@ -6,6 +6,7 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 import logging
 
 import input_data
+import input_data2
 
 import os
 import threading
@@ -49,6 +50,14 @@ async def contact_admin(message: types.Message):
     await bot.send_message(message.chat.id,'For all questions', reply_markup=markup)
 
 
+@dp.message_handler(Text(equals="Our social media"))
+async def check_media(message: types.Message):
+    markup1 = types.InlineKeyboardMarkup()
+    button2 = types.InlineKeyboardButton("YouTube", url='https://www.youtube.com/channel/UCzkzcIX9Bdi8VvRwKovygMQ')
+    markup1.add(button2)
+    await bot.send_message(message.chat.id, "Follow us", reply_markup=markup1)
+
+
 @dp.message_handler(Text(equals="Subscribe"))
 async def check_subscription(message: types.Message):
     if not (db.subscriber_exists(message.from_user.id)):
@@ -65,22 +74,47 @@ async def check_subscription(message: types.Message):
 
 
 
-@dp.message_handler(Text(equals="Our social media"))
-async def check_media(message: types.Message):
-    markup1 = types.InlineKeyboardMarkup()
-    button2 = types.InlineKeyboardButton("YouTube", url='https://www.youtube.com/channel/UCzkzcIX9Bdi8VvRwKovygMQ')
-    markup1.add(button2)
-    await bot.send_message(message.chat.id, "Follow us", reply_markup=markup1)
+
+
+
+
+
+@dp.message_handler(Text(equals="Config"))
+async def conf(message: types.Message):
+    keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    buttons = ["USER №1", "USER №2", 'USER №3', 'Сome back']
+    keyboard.add(*buttons)
+    await bot.send_message(message.chat.id, 'Choose user',
+                           reply_markup=keyboard)
+
 
 
 input_data.register_handlers_data(dp)
+input_data2.register_handlers_data2(dp)
+
+@dp.message_handler(Text(equals="Сome back"))
+async def conf(message: types.Message):
+    keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    buttons = ["Config", 'Start bot']
+    keyboard.add(*buttons)
+    await message.answer("We have returned",
+                         reply_markup=keyboard)
 
 
 @dp.message_handler(Text(equals="Start bot"))
-async def main(message: types.Message):
+async def conf(message: types.Message):
+    keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    buttons = ["Start 1 account","Start 2 account","Start 3 account", 'Сome back']
+    keyboard.add(*buttons)
+    await message.answer("We have returned",
+                         reply_markup=keyboard)
+
+
+@dp.message_handler(Text(equals="Start 1 account"))
+async def account1(message: types.Message):
     if db.subscriber_exists(message.from_user.id):
         try:
-            selected_box = db.post_product_id(message.chat.id)
+            selected_box = db.post_product_id(message.chat.id,account='')
 
             if headers_is_right(id=message.chat.id):
 
@@ -102,6 +136,43 @@ async def main(message: types.Message):
                 await bot.send_message(message.chat.id, 'Something wrong...')
                 await bot.send_message(message.chat.id, 'Check please: COOKIE, CSRFTOKEN')
 
+
+        except AttributeError:
+            await bot.send_message(message.chat.id, 'First, fill in the data by clicking on the button Config')
+
+
+    else:
+        await bot.send_message(message.chat.id, 'Subscription has expired. You can renew by writing to the admin',
+                               reply_markup=InlineKeyboardMarkup(). \
+                               add(InlineKeyboardButton("Contact Admin", url='https://t.me/diachylum')))
+
+
+
+@dp.message_handler(Text(equals="Start 2 account"))
+async def account2(message: types.Message):
+    if db.subscriber_exists(message.from_user.id):
+        try:
+            selected_box = db.post_product_id(message.chat.id,account='2')
+
+            if headers_is_right(id=message.chat.id):
+
+                await bot.send_message(message.chat.id, 'Successfully connected')
+
+                product_id = avalible_boxes[selected_box[0]]['product_id']
+                box = Box(product_id=product_id, amount=selected_box[1], id=message.chat.id)
+                start_sale_time = box._get_start_sale_time
+                send = threading.Thread(target=send_requests_to_buy,
+                                        args=(box,start_sale_time,))
+
+                await bot.send_message(message.chat.id, 'Waiting for start')
+                send.start()
+
+                #await send_requests_to_buy(box, start_sale_time)
+
+
+            else:
+                await bot.send_message(message.chat.id, 'Something wrong...')
+                await bot.send_message(message.chat.id, 'Check please: COOKIE, CSRFTOKEN')
 
 
         except AttributeError:
