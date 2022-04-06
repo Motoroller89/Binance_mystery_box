@@ -37,7 +37,7 @@ async def enter_date(message: types.Message):
 async def cansel_handler(message: types.Message, state: FSMContext):
     current_state = await state.get_state()
     if current_state is None:
-        return
+        return bot.send_message(message.chat.id, 'You have not started entering data')
     await state.finish()
     await bot.send_message(message.chat.id, 'Input canceled')
 
@@ -45,7 +45,7 @@ async def cansel_handler(message: types.Message, state: FSMContext):
 async def load_product(message: types.Message, state: FSMContext):
     if db.subscriber_exists(message.from_user.id):
         async with state.proxy() as data:
-                data['product_id'] = message.text
+            data['product_id'] = message.text
 
         await FSMAdmin.next()
         await bot.send_message(message.chat.id, f'Enter the number of boxes(max - {avalible_boxes[data["product_id"]]["limitPerTime"]})')
@@ -110,21 +110,20 @@ async def load_bnc_uuid(message: types.Message, state: FSMContext):
             dictionary = data.as_dict()
             try:
                 db.add_date(product_id=dictionary['product_id'], number=dictionary['number'],
-                        csrftoken=dictionary['csrftoken'], cookie=dictionary['cookie'],
-                        device_info=dictionary['device_info'], bnc_uuid=dictionary['bnc_uuid'],
-                        user_id=message.from_user.id)
+                            csrftoken=dictionary['csrftoken'], cookie=dictionary['cookie'],
+                            device_info=dictionary['device_info'], bnc_uuid=dictionary['bnc_uuid'],
+                            user_id=message.from_user.id,nomer='')
                 await bot.send_message(message.from_user.id, 'Data entry is complete.')
             except:
                 await bot.send_message(message.chat.id, 'Data entered incorrectly, please try again')
-
 
         await state.finish()
 
 
 def register_handlers_data(dp: Dispatcher):
-    dp.register_message_handler(enter_date, Text(equals="Config"), state=None)
+    dp.register_message_handler(enter_date, Text(equals="USER №1"), state=None)
     dp.register_message_handler(cansel_handler, state="*", commands='отмена')
-    dp.register_message_handler(cansel_handler, Text(equals='stop', ignore_case=True), state="*")
+    dp.register_message_handler(cansel_handler, Text(equals='Reload input data', ignore_case=True), state="*")
     dp.register_message_handler(load_product, state=FSMAdmin.product_id)
     dp.register_message_handler(load_number, state=FSMAdmin.number)
     dp.register_message_handler(load_csrftoken, state=FSMAdmin.csrftoken)

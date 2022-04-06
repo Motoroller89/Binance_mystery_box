@@ -9,8 +9,12 @@ class PostgreSql:
 
     def __init__(self):
         self.connection = psycopg2.connect(
-            os.environ.get('DATABASE_URL'),
-            sslmode = 'require'
+            host = 'ec2-52-208-185-143.eu-west-1.compute.amazonaws.com',
+            database  = 'd5b9a4s137v9j0',
+            user = 'cnhwbwwxgxegnn',
+            port= '5432',
+            password = '79cf742acc0d215e07466c4871726d193914c4037eb5208c665e3d30db9d8b87',
+
         )
 
         self.cursor = self.connection.cursor()
@@ -26,18 +30,26 @@ class PostgreSql:
             self.cursor.execute(f"SELECT * FROM subscription where user_id = {user_id} and  status = True")
             return bool(len(self.cursor.fetchall()))
 
+    def subscriber_exists_super_sub(self, user_id):
+        """ Проверяем есть ли в базе"""
+        with self.connection:
+            self.cursor.execute(f"SELECT * FROM subscription where user_id = {user_id} and  super_sub = True")
+            return bool(len(self.cursor.fetchall()))
+
     def update_subscription(self, user_id, status):
         """ update status subscriber"""
         return self.cursor.execute(f"UPDATE subscription set status = {status} where user_id = {user_id} ")
 
-    def add_date(self, product_id, number, csrftoken, cookie, device_info, bnc_uuid, user_id):
+    def add_date(self, product_id, number, csrftoken, cookie, device_info, bnc_uuid, user_id,nomer):
         with self.connection:
             return self.cursor.execute(
-                f"update subscription set product_id ={product_id}, number = {number}, csrftoken = '{csrftoken}', cookie = '{cookie}', device_info = '{device_info}', bnc_vuid = '{bnc_uuid}' where user_id = {user_id}")
+                f"update subscription set product_id{nomer} ={product_id}, number{nomer} = {number}, csrftoken{nomer} = '{csrftoken}', cookie{nomer} = '{cookie}', device_info{nomer} = '{device_info}', bnc_vuid{nomer} = '{bnc_uuid}' where user_id = {user_id}")
 
-    def post_product_id(self, user_id):
+
+
+    def post_product_id(self, user_id,account):
         with self.connection:
-            self.cursor.execute(f"select product_id,number from subscription where user_id = {user_id}")
+            self.cursor.execute(f"select product_id{account},number{account} from subscription where user_id = {user_id}")
             rows = self.cursor.fetchall()
             for row in rows:
                 return row[0], row[1]

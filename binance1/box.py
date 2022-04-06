@@ -26,7 +26,7 @@ class BaseBox:
 
         for box in boxes:
             status = box['status']
-            name = box['name']
+            name =  box['name']
             product_id = box['productId']
 
             url = f'https://www.binance.com/bapi/nft/v1/friendly/nft/mystery-box/detail?productId={product_id}&lazyCache=false'
@@ -35,9 +35,8 @@ class BaseBox:
             if event_is_not_over(status):
                 box_num += 1
                 avalible_boxes[str(box_num)] = {
-                    'name': name,
-                    'product_id': product_id,
-                    'limitPerTime': limitPerTime
+                    'name':  name,
+                    'product_id': product_id
                 }
 
         return avalible_boxes
