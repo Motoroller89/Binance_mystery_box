@@ -9,6 +9,7 @@ import input_data
 
 import input_data2
 import input_data3
+import input_code
 
 import os
 import threading
@@ -33,18 +34,28 @@ async def on_shourdown(dp):
 @dp.message_handler(commands="start")
 async def cmd_start(message: types.Message):
     try:
+        if " " in message.text:
+            referrer_candidate = message.text.split()[1]
+            if not db.have_users(message.chat.id):
+                db.add_invite(referrer_candidate)
+
         db.add_subscriber(message.chat.id, message.from_user.username)
+
+
     except:
         pass
 
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    buttons = ["Subscribe", "Contact Admin", 'Our social media']
+
+    buttons = ["Subscribe", "Contact Admin", 'Referral system', 'Our social media']
     keyboard.add(*buttons)
 
     await bot.send_message(message.chat.id, "Okay , let's start")
 
+
     await bot.send_message(message.chat.id, 'Click the «subscribe» button to subscribe to telegram bot ',
                            reply_markup=keyboard)
+
 
 
 @dp.message_handler(Text(equals="Contact Admin"))
@@ -53,6 +64,67 @@ async def contact_admin(message: types.Message):
     button1 = types.InlineKeyboardButton("Contact Admin", url='https://t.me/diachylum')
     markup.add(button1)
     await bot.send_message(message.chat.id, 'For all questions', reply_markup=markup)
+
+
+
+@dp.message_handler(Text(equals='Referral system'))
+async def referal(message: types.Message):
+    try:
+        db.add_referal(message.chat.id, message.from_user.username)
+    except:
+        pass
+
+    if db.code_cheak(message.chat.id):
+        keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        buttons = ["Create referral code", "How the referral system works?", 'Main menu']
+        keyboard.add(*buttons)
+        await bot.send_message(message.chat.id, 'Referral account partner ProMint bot',
+                               reply_markup=keyboard)
+
+    else:
+        keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        buttons = ['View referral code', "Referral statistics", "How the referral system works?", 'Main menu']
+        keyboard.add(*buttons)
+        await bot.send_message(message.chat.id, 'Referral account partner ProMint bot',
+                               reply_markup=keyboard)
+
+
+@dp.message_handler(Text(equals='View referral code'))
+async def referal(message: types.Message):
+    await bot.send_message(message.chat.id, f'https://t.me/Binance_nftbox_bot?start={db.return_code(message.chat.id)}')
+
+
+@dp.message_handler(Text(equals='Referral statistics'))
+async def referal_stas(message: types.Message):
+    await bot.send_message(message.chat.id, f'Unique members total invited: {db.return_users(message.chat.id)}\n\n'
+                                            f'Members who combined payment: 0\n\n'
+                                            f'Total earned: $0.00.\n\n'
+                                            f'Withdrawn from the referral system: $0.00.\n\n'
+                                            f'Referral system balance: $0.00')
+
+
+
+@dp.message_handler(Text(equals="Main menu"))
+async def check_media(message: types.Message):
+    keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    buttons = ["Subscribe", "Contact Admin", 'Referral system', 'Our social media']
+    keyboard.add(*buttons)
+    await bot.send_message(message.chat.id, 'Go to main menu',
+                           reply_markup=keyboard)
+
+
+@dp.message_handler(Text(equals="How the referral system works?"))
+async def check_media(message: types.Message):
+    await bot.send_message(message.chat.id,
+                           '💰Invite your friends and acquaintances to ProMint Bot, earn real money!\n\nWhat bonuses do we give:\n\n''🧑🏻‍💻 To you:\n'
+                           'For each referred user who purchases a subscription from the academy, you will receive 10% of the price of their subscription, and you will also receive 10% every time your friend renews their subscription.\n'
+                           '\n🧑‍💼 To Friend:\n'
+                           'For entering your referral code, a new user will receive a $5 discount on payment.\n'
+                           'Payments for the referral system are made once a week in manual mode, after submitting a withdrawal request.')
+
+
+input_code.register_handlers_code(dp)
+
 
 
 @dp.message_handler(Text(equals="Our social media"))
@@ -77,6 +149,7 @@ async def check_subscription(message: types.Message):
         keyboard.add(*buttons)
         await message.answer("Your subscription is active",
                              reply_markup=keyboard)  # сделать чтоб показывало до какого времени активна
+
 
 
 @dp.message_handler(Text(equals="Config"))
