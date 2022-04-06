@@ -30,6 +30,12 @@ class PostgreSql:
             self.cursor.execute(f"SELECT * FROM subscription where user_id = {user_id} and  status = True")
             return bool(len(self.cursor.fetchall()))
 
+    def subscriber_exists_super_sub(self, user_id):
+        """ Проверяем есть ли в базе"""
+        with self.connection:
+            self.cursor.execute(f"SELECT * FROM subscription where user_id = {user_id} and  super_sub = True")
+            return bool(len(self.cursor.fetchall()))
+
     def update_subscription(self, user_id, status):
         """ update status subscriber"""
         return self.cursor.execute(f"UPDATE subscription set status = {status} where user_id = {user_id} ")

@@ -7,6 +7,7 @@ import logging
 
 import input_data
 import input_data2
+import input_data3
 
 import os
 import threading
@@ -76,21 +77,23 @@ async def check_subscription(message: types.Message):
 
 
 
-
+#Reload input data
 
 
 @dp.message_handler(Text(equals="Config"))
 async def conf(message: types.Message):
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    buttons = ["USER №1", "USER №2", 'USER №3', 'Сome back']
+    buttons = ["USER №1", "USER №2", 'USER №3','Reload input data','Сome back']
     keyboard.add(*buttons)
     await bot.send_message(message.chat.id, 'Choose user',
                            reply_markup=keyboard)
 
 
 
+
 input_data.register_handlers_data(dp)
 input_data2.register_handlers_data2(dp)
+input_data3.register_handlers_data3(dp)
 
 @dp.message_handler(Text(equals="Сome back"))
 async def conf(message: types.Message):
@@ -181,6 +184,17 @@ async def account2(message: types.Message):
 
     else:
         await bot.send_message(message.chat.id, 'Subscription has expired. You can renew by writing to the admin',
+                               reply_markup=InlineKeyboardMarkup(). \
+                               add(InlineKeyboardButton("Contact Admin", url='https://t.me/diachylum')))
+
+
+@dp.message_handler(Text(equals="Start 3 account"))
+async def account3(message: types.Message):
+    if db.subscriber_exists_super_sub(message.from_user.id):
+        pass
+    else:
+        await bot.send_message(message.chat.id,
+                               'You need to increase your subscription level, contact the administrator',
                                reply_markup=InlineKeyboardMarkup(). \
                                add(InlineKeyboardButton("Contact Admin", url='https://t.me/diachylum')))
 
