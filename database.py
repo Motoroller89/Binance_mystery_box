@@ -36,6 +36,14 @@ class PostgreSql:
             self.cursor.execute(f"SELECT * FROM subscription where user_id = {user_id} and  super_sub = True")
             return bool(len(self.cursor.fetchall()))
 
+    def have_users(self, user_id):
+        """ Проверяем есть ли в базе"""
+        with self.connection:
+            self.cursor.execute(f"SELECT * FROM subscription where user_id = {user_id}")
+            return bool(len(self.cursor.fetchall()))
+
+
+
     def update_subscription(self, user_id, status):
         """ update status subscriber"""
         return self.cursor.execute(f"UPDATE subscription set status = {status} where user_id = {user_id} ")
@@ -62,6 +70,38 @@ class PostgreSql:
             for row in rows:
                 return row[0], row[1], row[2], row[3]
 
+    def add_referal(self, user_id, UserName):
+        with self.connection:
+            return self.cursor.execute(f"Insert into referal(user_name,id_user)  values('{UserName}',{user_id})")
+
+    def add_code(self, user_id, code):
+        with self.connection:
+            return self.cursor.execute(f"UPDATE referal set code = '{code}' where id_user = {user_id} ")
+
+    def code_cheak(self, user_id):
+        with self.connection:
+            self.cursor.execute(f"select * from  referal where  id_user= {user_id} and code IS NULL")
+            return bool(len(self.cursor.fetchall()))
+
+    def return_code(self,user_id):
+            with self.connection:
+                self.cursor.execute(
+                    f"select code from referal where id_user = {user_id}")
+            rows = self.cursor.fetchall()
+            for row in rows:
+                return row[0]
+
+    def add_invite(self, word):
+        with self.connection:
+            return self.cursor.execute(f"update referal set users_invite = users_invite +{1} where code = '{word}'")
+
+    def return_users(self,user_id):
+            with self.connection:
+                self.cursor.execute(
+                    f"select users_invite from referal where id_user = {user_id}")
+            rows = self.cursor.fetchall()
+            for row in rows:
+                return row[0]
     def close(self):
         """close connection with bd"""
         self.connection.close()
