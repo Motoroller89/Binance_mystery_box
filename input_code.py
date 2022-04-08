@@ -14,10 +14,13 @@ async def enter_date(message: types.Message):
 
 async def load_code(message: types.Message, state: FSMContext):
         try:
+            keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
+            buttons = ['View referral code', "Referral statistics", "How the referral system works?", 'Main menu']
+            keyboard.add(*buttons)
             db.add_code(user_id=message.from_user.id,code=message.text)
             await bot.send_message(message.chat.id, 'Referral code successfully set!\n'
                                                 'You can invite people through this link:\n'
-                                                f'https://t.me/Binance_nftbox_bot?start={message.text}')
+                                                f'https://t.me/Binance_nftbox_bot?start={message.text}',reply_markup=keyboard)
         except:
             await bot.send_message(message.chat.id,'Enter another code')
 
