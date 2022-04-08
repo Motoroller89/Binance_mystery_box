@@ -145,7 +145,7 @@ async def check_subscription(message: types.Message):
                                reply_markup=markup)
     else:
         keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        buttons = ["Config", 'Start bot']
+        buttons = ["Config", 'Start bot','Main menu']
         keyboard.add(*buttons)
         await message.answer("Your subscription is active",
                              reply_markup=keyboard)  # сделать чтоб показывало до какого времени активна
@@ -169,7 +169,7 @@ input_data3.register_handlers_data3(dp)
 @dp.message_handler(Text(equals="Сome back"))
 async def conf(message: types.Message):
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    buttons = ["Config", 'Start bot']
+    buttons = ["Config", 'Start bot', 'Main menu']
     keyboard.add(*buttons)
     await message.answer("We have returned",
                          reply_markup=keyboard)
