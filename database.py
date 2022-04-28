@@ -102,6 +102,26 @@ class PostgreSql:
             rows = self.cursor.fetchall()
             for row in rows:
                 return row[0]
+
+
+    def add_name_box(self,name):
+        with self.connection:
+            return self.cursor.execute(f"insert into boxes(box_name) values ('{name}')")
+
+    def check_name_box(self,name):
+        with self.connection:
+            self.cursor.execute(f"SELECT * FROM boxes where box_name = '{name}'")
+            return bool(len(self.cursor.fetchall()))
+
+    def get_all_user_id(self):
+        with self.connection:
+            self.cursor.execute(
+                f"select user_id from subscription")
+        rows = self.cursor.fetchall()
+        return rows
+
+
+
     def close(self):
         """close connection with bd"""
         self.connection.close()

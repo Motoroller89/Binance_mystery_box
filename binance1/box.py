@@ -28,6 +28,11 @@ class BaseBox:
             status = box['status']
             name =  box['name']
             product_id = box['productId']
+            starttime = box['startTime']
+            price = box['price']
+            currency = box['currency']
+            image = box['image']
+            store = box['store']
 
             url = f'https://www.binance.com/bapi/nft/v1/friendly/nft/mystery-box/detail?productId={product_id}&lazyCache=false'
             limitPerTime = requests.get(url).json()['data']['limitPerTime']
@@ -36,7 +41,12 @@ class BaseBox:
                 box_num += 1
                 avalible_boxes[str(box_num)] = {
                     'name':  name,
-                    'product_id': product_id
+                    'product_id': product_id,
+                    'starttime': starttime,
+                    'price': price,
+                    'currency': currency,
+                    'image': image,
+                    'store' : store,
                 }
 
         return avalible_boxes
