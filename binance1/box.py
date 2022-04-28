@@ -28,12 +28,22 @@ class BaseBox:
             status = box['status']
             name =  box['name']
             product_id = box['productId']
+            starttime = box['startTime']
+            price = box['price']
+            currency = box['currency']
+            image = box['image']
+            store = box['store']
 
             if event_is_not_over(status):
                 box_num += 1
                 avalible_boxes[str(box_num)] = {
                     'name':  name,
-                    'product_id': product_id
+                    'product_id': product_id,
+                    'starttime': starttime,
+                    'price': price,
+                    'currency': currency,
+                    'image': image,
+                    'store' : store,
                 }
 
         return avalible_boxes
