@@ -294,7 +294,7 @@ async def scheduled(wait_for):
                     date_user_id = db.get_all_user_id()
                     for id in date_user_id:
 
-                        await bot.send_photo(id,
+                        await bot.send_photo(id[0],
                                              f"{news['image']}",
                                              f'NEW BOX!!!\n'
                                              f'{news["name"]}\n'
