@@ -43,12 +43,11 @@ async def cansel_handler(message: types.Message, state: FSMContext):
 
 
 async def load_product(message: types.Message, state: FSMContext):
-    if db.subscriber_exists(message.from_user.id):
-        async with state.proxy() as data:
-            data['product_id'] = message.text
+     async with state.proxy() as data:
+         data['product_id'] = message.text
 
-        await FSMAdmin.next()
-        await bot.send_message(message.chat.id, f'Enter the number of boxes(max - {avalible_boxes[data["product_id"]]["limitPerTime"]})')
+     await FSMAdmin.next()
+     await bot.send_message(message.chat.id, f'Enter the number of boxes(max - {avalible_boxes[data["product_id"]]["limitPerTime"]})')
 
 
 async def load_number(message: types.Message, state: FSMContext):
