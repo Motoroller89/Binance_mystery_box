@@ -275,38 +275,7 @@ async def account3(message: types.Message):
 
 
 
-async def scheduled(wait_for):
-    while True:
-
-        await asyncio.sleep(wait_for)
-
-        new_box = avalible_boxes
-
-        if len(new_box) != 0:
-            for i in range(len(new_box)):
-
-                news = new_box[f'{i + 1}']
-                if not db.check_name_box(news['name']):
-                    db.add_name_box(news['name'])
-                    ts = news["starttime"] / 1000
-                    time = datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
-
-                    date_user_id = db.get_all_user_id()
-                    for id in date_user_id:
-
-                        await bot.send_photo(id,
-                                             f"{news['image']}",
-                                             f'NEW BOX!!!\n'
-                                             f'{news["name"]}\n'
-                                             f'Count : {news["store"]}\n'
-                                             f'price : {news["price"]} {news["currency"]}\n'
-                                             f'Start: {time}\n'
-                                             f'https://www.binance.com/ru/nft/mystery-box/detail?productId={news["product_id"]}&number=1',
-                                             )
-
 if __name__ == '__main__':
-    loop = asyncio.get_event_loop()
-    loop.create_task(scheduled(3600))
     executor.start_webhook(
         dispatcher=dp,
         webhook_path='',
